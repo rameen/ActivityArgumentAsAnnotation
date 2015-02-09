@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AnnotationProcessor:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AnnotationProcessor_jar</output-path>
+    <root id="archive" name="AnnotationProcessor.jar">
+      <element id="module-output" name="AnnotationProcessor" />
+      <element id="module-output" name="Annotations" />
+      <element id="directory" name="META-INF">
+        <element id="directory" name="services">
+          <element id="file-copy" path="$PROJECT_DIR$/AnnotationProcessor/resources/META-INF/services/javax.annotation.processing.Processor" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AnnotationApp/AnnotationApp.iml" filepath="$PROJECT_DIR$/AnnotationApp/AnnotationApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AnnotationProcessor/AnnotationProcessor.iml" filepath="$PROJECT_DIR$/AnnotationProcessor/AnnotationProcessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/butterknife/butterknife/src/main/main.iml" filepath="$PROJECT_DIR$/butterknife/butterknife/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/butterknife/butterknife-sample/src/main/sample.iml" filepath="$PROJECT_DIR$/butterknife/butterknife-sample/src/main/sample.iml" />
+    </modules>
+  </component>
+</project>
