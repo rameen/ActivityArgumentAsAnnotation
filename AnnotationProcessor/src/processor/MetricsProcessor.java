@@ -47,14 +47,15 @@ public class MetricsProcessor extends AbstractProcessor
         StringBuilder message = new StringBuilder();
         for (Element elem : roundEnv.getElementsAnnotatedWith(ActivityArg.class))
         {
-            printMessage("element class" + elem.getClass());
-            printMessage("element type" + elem.asType().getKind().toString());
+           // printMessage("element class" + elem.getClass());
+            //printMessage("element type" + elem.asType().getKind().toString());
             printElementProperties(elem);
             addToHashMap(elem);
             ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(elem, _messager);
-            printMessage("activity args" + activityArgsInfo.getAnnotation().annotationType());
+            //printMessage("activity args" + activityArgsInfo.getAnnotation().annotationType());
 
         }
+        generateCode();
         //checkHashMapSize();
         return false; // allow others to process this annotation type
     }
@@ -138,24 +139,30 @@ public class MetricsProcessor extends AbstractProcessor
         return SourceVersion.latestSupported();
     }
 
-    public void generateCode(ActivityArgsInfo activityArgsInfo, Filer filer)
+    public void generateCode()
     {
-        String simpleName = activityArgsInfo.getEnclosingClassName();
-        JavaFileObject jfo = null;
-        try
-        {
-            SourceGenerator sourceGenerator = new SourceGenerator(activityArgsInfo);
-            jfo = filer.createSourceFile(sourceGenerator.get_className());
-            Writer writer = jfo.openWriter();
-            JavaFile javaFile = JavaFile.builder("", sourceGenerator.getClassSource()).build();
-            printMessage("source generated");
-            printMessage(javaFile.toString());
-        } catch (IOException e)
-        {
-            printMessage("Exception while generating source");
-            e.printStackTrace();
-        }
 
+        for (String key : annotationMap.keySet())
+        {
+            Set<ActivityArgsInfo> infoSet = annotationMap.get(key);
+            SourceGenerator sourceGenerator = new SourceGenerator(infoSet);
+            sourceGenerator.generateCode();
+            JavaFileObject jfo = null;
+            try
+            {
+                jfo = _filer.createSourceFile(sourceGenerator.get_className());
+                Writer writer = jfo.openWriter();
+                JavaFile javaFile = JavaFile.builder("", sourceGenerator.getClassSource()).build();
+                printMessage("source generated");
+                printMessage(javaFile.toString());
+            } catch (IOException e)
+            {
+                printMessage("Exception while generating source");
+                e.printStackTrace();
+            }
+        }
+        ;
+        
 
     }
     /**

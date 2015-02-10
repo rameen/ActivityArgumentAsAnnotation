@@ -4,48 +4,70 @@ import com.squareup.javapoet.*;
 import modal.ActivityArgsInfo;
 
 import javax.lang.model.element.Modifier;
+import java.util.Set;
 
 public class SourceGenerator
 {
 
     public static final String FILE_NAME_SUFFIX = "Builder";
-    public static final String SETTER_METHOD_PARAM_NAME_DATA = "data";
-    private final ClassName _fieldType;
+
     ClassName intentClassName = ClassName.get("android.content", "Intent");
-    private ActivityArgsInfo activityArgsInfo;
-    private final String _fieldName;
-    private final String _className;
+    private String _className;
+    private Set<ActivityArgsInfo> annotationSet;
+    private TypeSpec.Builder _classBuilder;
 
-    public SourceGenerator(ActivityArgsInfo activityArgsInfo)
+
+    public SourceGenerator(Set<ActivityArgsInfo> annotationSet)
+    {
+        this.annotationSet = annotationSet;
+        int i = 0;
+
+        for (ActivityArgsInfo activityArgInfo : annotationSet)
+        {
+            if (i == 0)
+            {
+                init(activityArgInfo);
+                i++;
+            }
+
+
+        }
+
+    }
+
+    private void init(ActivityArgsInfo activityArgsInfo)
     {
 
-        this.activityArgsInfo = activityArgsInfo;
-        _fieldName = activityArgsInfo.getAnnotatedFieldName();
         _className = activityArgsInfo.getEnclosingClassName() + FILE_NAME_SUFFIX;
-        _fieldType = activityArgsInfo.getFieldType();
 
 
     }
 
-    public String get_className()
+    public void generateCode()
     {
-        return _className;
+        _classBuilder = getClassBuilder();
+        MethodSpec.Builder getIntentMethodBuilder = getIntentMethodSpecBuilder();
+        BuilderClassGenerator argumentCodeGenerator;
+        for (ActivityArgsInfo argsInfo : annotationSet)
+        {
+            argumentCodeGenerator = new BuilderClassGenerator(argsInfo);
+            FieldSpec fieldSpec = argumentCodeGenerator.getFieldSpec();
+            MethodSpec methodSpec = argumentCodeGenerator.getSetterMethodSpec();
+
+            argumentCodeGenerator.addNotNullFieldCheck(getIntentMethodBuilder);
+            _classBuilder.addField(fieldSpec);
+            _classBuilder.addMethod(methodSpec);
+        }
+        _classBuilder.addMethod(getIntentMethodBuilder.build());
+
+
     }
-
-    public TypeSpec getClassSource()
+    public MethodSpec.Builder getIntentMethodSpecBuilder()
     {
-        TypeSpec.Builder classSpecBuilder = TypeSpec.classBuilder(_className).addMethod(getIntentMethodSpec()).addField(getFieldSpec());
-        classSpecBuilder.addMethod(getSetterMethod());
-        classSpecBuilder.addModifiers(Modifier.PUBLIC);
-        return classSpecBuilder.build();
-    }
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getIntent");
+        addNewIntentStatement(builder, intentClassName);
+        return builder;
 
-
-    private FieldSpec getFieldSpec()
-    {
-
-        FieldSpec fieldSpec = FieldSpec.builder(_fieldType, _fieldName).addModifiers(Modifier.PRIVATE).build();
-        return fieldSpec;
     }
 
     private MethodSpec.Builder addNewIntentStatement(MethodSpec.Builder builder, ClassName intentClassName)
@@ -53,46 +75,23 @@ public class SourceGenerator
         return builder.addStatement(intentClassName.toString() + " intent " + " = new $T()", intentClassName);
     }
 
-    private MethodSpec.Builder addNotNullFieldCheck(MethodSpec.Builder builder, String key, String fieldName)
-    {
-        builder.beginControlFlow("if ( " + fieldName + " != null)");
-        addToIntentStatement(builder, key, fieldName);
-        builder.endControlFlow();
-        return builder;
 
+    public String get_className()
+    {
+        return _className;
     }
 
-    private MethodSpec.Builder addToIntentStatement(MethodSpec.Builder builder, String key, String fieldName)
+    public TypeSpec.Builder getClassBuilder()
     {
-        builder.addStatement("intent.putExtra($S,$N)", key, fieldName);
-        return builder;
+        TypeSpec.Builder classSpecBuilder = TypeSpec.classBuilder(_className);
+        classSpecBuilder.addModifiers(Modifier.PUBLIC);
+        return classSpecBuilder;
     }
 
-    public MethodSpec getIntentMethodSpec()
+
+    public TypeSpec getClassSource()
     {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getIntent");
-        addNewIntentStatement(builder, intentClassName);
-        addNotNullFieldCheck(builder, activityArgsInfo.getAnnotation().key(), _fieldName);
-        return builder.build();
+        return _classBuilder.build();
 
-    }
-
-    private MethodSpec getSetterMethod()
-    {
-
-        ParameterSpec parameterSpec = getParameterForSetter();
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("set" + _fieldName);
-        builder.addModifiers(Modifier.FINAL, Modifier.PUBLIC);
-        builder.addParameter(parameterSpec);
-        builder.addStatement("$N=$N", _fieldName, SETTER_METHOD_PARAM_NAME_DATA);
-        builder.returns(void.class);
-        return builder.build();
-
-    }
-
-    private ParameterSpec getParameterForSetter()
-    {
-        ParameterSpec.Builder builder = ParameterSpec.builder(_fieldType, SETTER_METHOD_PARAM_NAME_DATA, Modifier.FINAL);
-        return builder.build();
     }
 }
