@@ -45,20 +45,57 @@ public class MetricsProcessor extends AbstractProcessor
     {
 
         StringBuilder message = new StringBuilder();
-        Set<ActivityArgsInfo> annotatedActivityArgsSet = new HashSet<ActivityArgsInfo>();
         for (Element elem : roundEnv.getElementsAnnotatedWith(ActivityArg.class))
         {
             printMessage("element class" + elem.getClass());
             printMessage("element type" + elem.asType().getKind().toString());
             printElementProperties(elem);
-
+            addToHashmap(elem);
             ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(elem, _messager);
-            printMessage("acitivity args" + activityArgsInfo.getAnnotation().annotationType());
-            ActivityArg activityArg = elem.getAnnotation(ActivityArg.class);
-            annotatedActivityArgsSet.add()
+            printMessage("activity args" + activityArgsInfo.getAnnotation().annotationType());
+
+        }
+        //checkHashMapSize();
+        return false; // allow others to process this annotation type
+    }
+
+    private void checkHashMapSize()
+    {
+        printMessage("validating hash map");
+        for (Set<ActivityArgsInfo> infoSet : annotationMap.values())
+        {
+            if (infoSet != null)
+            {
+                for (ActivityArgsInfo activityArgsInfo : infoSet)
+                {
+                    printMessage("field Name:" + activityArgsInfo.getAnnotatedFieldName());
+                    printMessage("field type:" + activityArgsInfo.getFieldType());
+                }
+            }
+
+        }
+        ;
+    }
+
+    private void addToHashmap(Element element)
+    {
+        ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(element, _messager);
+        String enclosingClassName = activityArgsInfo.getEnclosingClassName();
+        Set<ActivityArgsInfo> infoSet = annotationMap.get(enclosingClassName);
+        if (infoSet != null)
+        {
+            printMessage("set is not null");
+            infoSet.add(activityArgsInfo);
+
+        } else
+        {
+            printMessage("set is  null");
+            infoSet = new HashSet<ActivityArgsInfo>();
+            infoSet.add(activityArgsInfo);
+            annotationMap.put(enclosingClassName, infoSet);
         }
 
-        return false; // allow others to process this annotation type
+
     }
 
     private void printElementProperties(Element elem)
