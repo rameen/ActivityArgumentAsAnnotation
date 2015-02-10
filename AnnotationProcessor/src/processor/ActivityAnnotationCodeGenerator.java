@@ -8,7 +8,7 @@ import modal.ActivityArgsInfo;
 
 import javax.lang.model.element.Modifier;
 
-public class BuilderClassGenerator
+public class ActivityAnnotationCodeGenerator
 {
     private final ClassName _fieldType;
     private final String _fieldName;
@@ -18,7 +18,7 @@ public class BuilderClassGenerator
     ClassName intentClassName = ClassName.get("android.content", "Intent");
     public static final String SETTER_METHOD_PARAM_NAME_DATA = "data";
 
-    public BuilderClassGenerator(ActivityArgsInfo activityArgsInfo)
+    public ActivityAnnotationCodeGenerator(ActivityArgsInfo activityArgsInfo)
     {
         this._activityArgsInfo = activityArgsInfo;
         this._fieldType = activityArgsInfo.getFieldType();

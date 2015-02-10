@@ -47,10 +47,10 @@ public class SourceGenerator
     {
         _classBuilder = getClassBuilder();
         MethodSpec.Builder getIntentMethodBuilder = getIntentMethodSpecBuilder();
-        BuilderClassGenerator argumentCodeGenerator;
+        ActivityAnnotationCodeGenerator argumentCodeGenerator;
         for (ActivityArgsInfo argsInfo : annotationSet)
         {
-            argumentCodeGenerator = new BuilderClassGenerator(argsInfo);
+            argumentCodeGenerator = new ActivityAnnotationCodeGenerator(argsInfo);
             FieldSpec fieldSpec = argumentCodeGenerator.getFieldSpec();
             MethodSpec methodSpec = argumentCodeGenerator.getSetterMethodSpec();
 
