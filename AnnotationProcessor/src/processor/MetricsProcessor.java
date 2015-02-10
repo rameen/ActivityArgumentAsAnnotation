@@ -50,7 +50,7 @@ public class MetricsProcessor extends AbstractProcessor
             printMessage("element class" + elem.getClass());
             printMessage("element type" + elem.asType().getKind().toString());
             printElementProperties(elem);
-            addToHashmap(elem);
+            addToHashMap(elem);
             ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(elem, _messager);
             printMessage("activity args" + activityArgsInfo.getAnnotation().annotationType());
 
@@ -77,7 +77,7 @@ public class MetricsProcessor extends AbstractProcessor
         ;
     }
 
-    private void addToHashmap(Element element)
+    private void addToHashMap(Element element)
     {
         ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(element, _messager);
         String enclosingClassName = activityArgsInfo.getEnclosingClassName();
