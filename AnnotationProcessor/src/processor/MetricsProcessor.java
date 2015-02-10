@@ -17,24 +17,25 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MetricsProcessor extends AbstractProcessor
 {
 
     private Messager _messager;
-    private Elements elementUtils;
+    private Elements _elementUtils;
     private Filer _filer;
     private Types _typeUtils;
+
+    Map<String, Set<ActivityArgsInfo>> annotationMap = new HashMap<String, Set<ActivityArgsInfo>>();
+
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv)
     {
         super.init(processingEnv);
         _messager = processingEnv.getMessager();
-        elementUtils = processingEnv.getElementUtils();
+        _elementUtils = processingEnv.getElementUtils();
         _filer = processingEnv.getFiler();
         _typeUtils = processingEnv.getTypeUtils();
     }
@@ -44,7 +45,7 @@ public class MetricsProcessor extends AbstractProcessor
     {
 
         StringBuilder message = new StringBuilder();
-
+        Set<ActivityArgsInfo> annotatedActivityArgsSet = new HashSet<ActivityArgsInfo>();
         for (Element elem : roundEnv.getElementsAnnotatedWith(ActivityArg.class))
         {
             printMessage("element class" + elem.getClass());
@@ -54,7 +55,7 @@ public class MetricsProcessor extends AbstractProcessor
             ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(elem, _messager);
             printMessage("acitivity args" + activityArgsInfo.getAnnotation().annotationType());
             ActivityArg activityArg = elem.getAnnotation(ActivityArg.class);
-            generateCode(activityArgsInfo, _filer);
+            annotatedActivityArgsSet.add()
         }
 
         return false; // allow others to process this annotation type
@@ -75,8 +76,8 @@ public class MetricsProcessor extends AbstractProcessor
         TypeMirror elementTypeMirror = elem.asType();
         ClassName className = (ClassName) ClassName.get(elementTypeMirror);
         printMessage("class Name" + elementTypeMirror.toString());
-        printMessage("other details "+elementTypeMirror.getClass());
-        printMessage("poet class name"+ className);
+        printMessage("other details " + elementTypeMirror.getClass());
+        printMessage("poet class name" + className);
     }
 
     private void printMessage(String message)
