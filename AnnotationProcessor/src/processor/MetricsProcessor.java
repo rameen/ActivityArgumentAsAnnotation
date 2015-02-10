@@ -2,22 +2,23 @@ package processor;
 
 
 import annoations.ActivityArg;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import modal.ActivityArgsInfo;
+import utils.Utils;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MetricsProcessor extends AbstractProcessor
 {
@@ -44,39 +45,16 @@ public class MetricsProcessor extends AbstractProcessor
     public boolean process(Set<? extends TypeElement> arg0, RoundEnvironment roundEnv)
     {
 
-        StringBuilder message = new StringBuilder();
         for (Element elem : roundEnv.getElementsAnnotatedWith(ActivityArg.class))
         {
-           // printMessage("element class" + elem.getClass());
-            //printMessage("element type" + elem.asType().getKind().toString());
-            printElementProperties(elem);
+            Utils.printElementProperties(_messager, elem);
             addToHashMap(elem);
-            ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(elem, _messager);
-            //printMessage("activity args" + activityArgsInfo.getAnnotation().annotationType());
 
         }
         generateCode();
-        //checkHashMapSize();
         return false; // allow others to process this annotation type
     }
 
-    private void checkHashMapSize()
-    {
-        printMessage("validating hash map");
-        for (Set<ActivityArgsInfo> infoSet : annotationMap.values())
-        {
-            if (infoSet != null)
-            {
-                for (ActivityArgsInfo activityArgsInfo : infoSet)
-                {
-                    printMessage("field Name:" + activityArgsInfo.getAnnotatedFieldName());
-                    printMessage("field type:" + activityArgsInfo.getFieldType());
-                }
-            }
-
-        }
-        ;
-    }
 
     private void addToHashMap(Element element)
     {
@@ -99,28 +77,10 @@ public class MetricsProcessor extends AbstractProcessor
 
     }
 
-    private void printElementProperties(Element elem)
-    {
-        printMessage("ToString:" + elem.toString());
-        printMessage("Kind name" + elem.getKind().name());
-        printMessage("Simple Name " + elem.getSimpleName());
-        List<? extends Element> list = elem.getEnclosedElements();
-        for (int i = 0; i < list.size(); i++)
-        {
-            Element element = list.get(i);
-            printMessage("enclosing element" + elem.getSimpleName());
-
-        }
-        TypeMirror elementTypeMirror = elem.asType();
-        ClassName className = (ClassName) ClassName.get(elementTypeMirror);
-        printMessage("class Name" + elementTypeMirror.toString());
-        printMessage("other details " + elementTypeMirror.getClass());
-        printMessage("poet class name" + className);
-    }
 
     private void printMessage(String message)
     {
-        _messager.printMessage(Diagnostic.Kind.NOTE, "Compiler : " + message);
+        Utils.printMessage(_messager, message);
     }
 
     @Override
@@ -135,7 +95,6 @@ public class MetricsProcessor extends AbstractProcessor
     public SourceVersion getSupportedSourceVersion()
     {
 
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "supported version");
         return SourceVersion.latestSupported();
     }
 
@@ -162,7 +121,7 @@ public class MetricsProcessor extends AbstractProcessor
             }
         }
         ;
-        
+
 
     }
     /**
