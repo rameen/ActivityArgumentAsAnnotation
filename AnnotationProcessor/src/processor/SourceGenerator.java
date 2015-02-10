@@ -34,7 +34,7 @@ public class SourceGenerator
 
     public TypeSpec getClassSource()
     {
-        TypeSpec.Builder classSpecBuilder = TypeSpec.classBuilder(_className).addMethod(getMethodSpec()).addField(getFieldSpec());
+        TypeSpec.Builder classSpecBuilder = TypeSpec.classBuilder(_className).addMethod(getIntentMethodSpec()).addField(getFieldSpec());
         classSpecBuilder.addMethod(getSetterMethod());
         classSpecBuilder.addModifiers(Modifier.PUBLIC);
         return classSpecBuilder.build();
@@ -68,9 +68,9 @@ public class SourceGenerator
         return builder;
     }
 
-    public MethodSpec getMethodSpec()
+    public MethodSpec getIntentMethodSpec()
     {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("set" + _fieldName);
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getIntent");
         addNewIntentStatement(builder, intentClassName);
         addNotNullFieldCheck(builder, activityArgsInfo.getAnnotation().key(), _fieldName);
         return builder.build();
