@@ -10,6 +10,7 @@ public class SourceGenerator
 {
 
     public static final String FILE_NAME_SUFFIX = "Builder";
+    public static final String INTENT_VAR_NAME = " intent ";
 
     ClassName intentClassName = ClassName.get("android.content", "Intent");
     private String _className;
@@ -58,6 +59,7 @@ public class SourceGenerator
             _classBuilder.addField(fieldSpec);
             _classBuilder.addMethod(methodSpec);
         }
+        addReturnIntentStatement(getIntentMethodBuilder);
         _classBuilder.addMethod(getIntentMethodBuilder.build());
 
 
@@ -68,13 +70,19 @@ public class SourceGenerator
         addNewIntentStatement(builder, intentClassName);
         builder.returns(intentClassName);
         builder.addModifiers(Modifier.PUBLIC);
+
         return builder;
 
     }
 
+    private void addReturnIntentStatement(MethodSpec.Builder builder)
+    {
+        builder.addStatement("return $N",INTENT_VAR_NAME);
+    }
+
     private MethodSpec.Builder addNewIntentStatement(MethodSpec.Builder builder, ClassName intentClassName)
     {
-        return builder.addStatement(intentClassName.toString() + " intent " + " = new $T()", intentClassName);
+        return builder.addStatement(intentClassName.toString() + INTENT_VAR_NAME + " = new $T()", intentClassName);
     }
 
 
