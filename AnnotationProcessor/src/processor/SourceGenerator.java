@@ -66,6 +66,8 @@ public class SourceGenerator
     {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getIntent");
         addNewIntentStatement(builder, intentClassName);
+        builder.returns(intentClassName);
+        builder.addModifiers(Modifier.PUBLIC);
         return builder;
 
     }
