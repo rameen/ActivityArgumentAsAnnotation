@@ -46,7 +46,7 @@ public class SourceGenerator
     }
     public String getPackageName()
     {
-        return _packageName;
+        return "";//_packageName;
     }
 
     public void generateCode()

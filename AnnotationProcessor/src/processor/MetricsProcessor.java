@@ -13,10 +13,8 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -126,17 +124,16 @@ public class MetricsProcessor extends AbstractProcessor
             Set<ActivityArgsInfo> infoSet = annotationMap.get(key);
             SourceGenerator sourceGenerator = new SourceGenerator(infoSet);
             sourceGenerator.generateCode();
-            JavaFileObject jfo = null;
 
             try
             {
-                Writer writer = jfo.openWriter();
-                JavaFile javaFile = JavaFile.builder(sourceGenerator.getPackageName(), sourceGenerator.getClassSource()).build();
+                JavaFile javaFile = JavaFile.builder(sourceGenerator.get_className(), sourceGenerator.getClassSource()).build();
                 printMessage("source generated");
                 printMessage(javaFile.toString());
                 File file = new File(sourceGenerator.getPackageName());
                 javaFile.writeTo(file);
                 printMessage(javaFile.packageName);
+                javaFile.writeTo(_filer);
             } catch (IOException e)
             {
                 printMessage("Exception while generating source" +e.toString());
