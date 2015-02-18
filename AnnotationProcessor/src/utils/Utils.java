@@ -21,9 +21,9 @@ public class Utils
 
     public static void printElementProperties(Messager messager, Element elem)
     {
-        printMessage(messager, "ToString:" + elem.toString());
-        printMessage(messager, "Kind name" + elem.getKind().name());
-        printMessage(messager, "Simple Name " + elem.getSimpleName());
+        printMessage(messager, "toString:" + elem.toString());
+        printMessage(messager, "Kind name:" + elem.getKind().name());
+        printMessage(messager, "Simple Name: " + elem.getSimpleName());
         List<? extends Element> list = elem.getEnclosedElements();
         for (int i = 0; i < list.size(); i++)
         {

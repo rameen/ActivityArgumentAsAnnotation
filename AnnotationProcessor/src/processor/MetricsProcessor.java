@@ -9,10 +9,12 @@ import utils.Utils;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -52,6 +54,8 @@ public class MetricsProcessor extends AbstractProcessor
 
         }
         generateCode();
+        annotationMap.clear();
+
         return false; // allow others to process this annotation type
     }
 
@@ -60,6 +64,7 @@ public class MetricsProcessor extends AbstractProcessor
     {
         ActivityArgsInfo activityArgsInfo = new ActivityArgsInfo(element, _messager);
         String enclosingClassName = activityArgsInfo.getEnclosingClassName();
+        checkEnclosingType(element);
         Set<ActivityArgsInfo> infoSet = annotationMap.get(enclosingClassName);
         if (infoSet != null)
         {
@@ -75,6 +80,21 @@ public class MetricsProcessor extends AbstractProcessor
         }
 
 
+    }
+
+    private void checkEnclosingType(Element element)
+    {
+        Element classEnclosingElement = element.getEnclosingElement();
+        Element checkEnclosingElement = element.getEnclosingElement();
+        PackageElement annotatedElement = _elementUtils.getPackageOf(element);
+        PackageElement classAnnotatedElement = _elementUtils.getPackageOf(classEnclosingElement);
+        Utils.printMessage(_messager,"Package element annotated"+annotatedElement.toString());
+        Utils.printMessage(_messager,"package element class " + classAnnotatedElement.toString());
+
+        Utils.printMessage(_messager, "Begin ClassEnclosing Checking");
+        Utils.printElementProperties(_messager, classEnclosingElement);
+        Utils.printMessage(_messager, "begin check enclosing class");
+        Utils.printElementProperties(_messager, checkEnclosingElement);
     }
 
 
@@ -107,17 +127,27 @@ public class MetricsProcessor extends AbstractProcessor
             SourceGenerator sourceGenerator = new SourceGenerator(infoSet);
             sourceGenerator.generateCode();
             JavaFileObject jfo = null;
+
             try
             {
-                jfo = _filer.createSourceFile(sourceGenerator.get_className());
                 Writer writer = jfo.openWriter();
-                JavaFile javaFile = JavaFile.builder("", sourceGenerator.getClassSource()).build();
+                JavaFile javaFile = JavaFile.builder(sourceGenerator.getPackageName(), sourceGenerator.getClassSource()).build();
                 printMessage("source generated");
                 printMessage(javaFile.toString());
+                File file = new File(sourceGenerator.getPackageName());
+                javaFile.writeTo(file);
+                printMessage(javaFile.packageName);
             } catch (IOException e)
             {
-                printMessage("Exception while generating source");
-                e.printStackTrace();
+                printMessage("Exception while generating source" +e.toString());
+                printMessage(e.getMessage());
+                for (StackTraceElement stackTraceElement : e.getStackTrace())
+                {
+                    printMessage(stackTraceElement.toString());
+                }
+                ;
+
+
             }
         }
         ;

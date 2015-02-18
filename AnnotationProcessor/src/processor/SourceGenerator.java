@@ -16,6 +16,7 @@ public class SourceGenerator
     private String _className;
     private Set<ActivityArgsInfo> annotationSet;
     private TypeSpec.Builder _classBuilder;
+    private String _packageName;
 
 
     public SourceGenerator(Set<ActivityArgsInfo> annotationSet)
@@ -40,8 +41,12 @@ public class SourceGenerator
     {
 
         _className = activityArgsInfo.getEnclosingClassName() + FILE_NAME_SUFFIX;
+        _packageName = activityArgsInfo.getPackageName();
 
-
+    }
+    public String getPackageName()
+    {
+        return _packageName;
     }
 
     public void generateCode()

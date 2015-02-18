@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeMirror;
 
 public class ActivityArgsInfo
@@ -15,6 +16,7 @@ public class ActivityArgsInfo
     Element element;
     Messager messager;
     private ActivityArg activityArgs;
+    private String packageName;
 
 
     public ActivityArgsInfo(Element element, Messager messager)
@@ -25,7 +27,18 @@ public class ActivityArgsInfo
         this.activityArgs = element.getAnnotation(ActivityArg.class);
         this.annotatedFieldName = element.getSimpleName().toString();
         typeMirror = element.asType();
+        init();
 
+    }
+
+    private void init()
+    {
+        Element enclosingElement = this.element.getEnclosingElement();
+        if (enclosingElement.getKind() == ElementKind.CLASS)
+        {
+             String fullName = enclosingElement.toString();
+            this.packageName =fullName.substring(0,fullName.lastIndexOf("."));
+        }
     }
 
     public String getEnclosingClassName()
@@ -50,5 +63,10 @@ public class ActivityArgsInfo
     public ClassName getFieldType()
     {
         return (ClassName) ClassName.get(typeMirror);
+    }
+
+    public String getPackageName()
+    {
+        return packageName;
     }
 }
