@@ -13,7 +13,6 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -130,9 +129,8 @@ public class MetricsProcessor extends AbstractProcessor
                 JavaFile javaFile = JavaFile.builder(sourceGenerator.getPackageName(), sourceGenerator.getClassSource()).build();
                 printMessage("source generated");
                 printMessage(javaFile.toString());
-                File file = new File(sourceGenerator.getPackageName());
-                javaFile.writeTo(file);
                 printMessage(javaFile.packageName);
+                //Must write using filer to generate code
                 javaFile.writeTo(_filer);
             } catch (IOException e)
             {
