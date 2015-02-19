@@ -18,6 +18,7 @@
         <processorPath useClasspath="true" />
       </profile>
       <profile default="false" name="MyAnnotations" enabled="true">
+        <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true">
           <entry name="$PROJECT_DIR$/AnnotationProcessor/src/processor/MetricsProcessor.java" />
         </processorPath>
