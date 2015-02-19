@@ -2,6 +2,7 @@ package modal;
 
 import annoations.ActivityArg;
 import com.squareup.javapoet.ClassName;
+import utils.Utils;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
@@ -27,17 +28,19 @@ public class ActivityArgsInfo
         this.activityArgs = element.getAnnotation(ActivityArg.class);
         this.annotatedFieldName = element.getSimpleName().toString();
         typeMirror = element.asType();
-        init();
+        initializePackagename();
 
     }
 
-    private void init()
+    private void initializePackagename()
     {
         Element enclosingElement = this.element.getEnclosingElement();
         if (enclosingElement.getKind() == ElementKind.CLASS)
         {
              String fullName = enclosingElement.toString();
-            this.packageName =fullName.substring(0,fullName.lastIndexOf("."));
+            Utils.printMessage(messager,"full name" + fullName);
+            this.packageName = fullName.substring(0,fullName.lastIndexOf("."));
+            Utils.printMessage(messager,"package name"+packageName);
         }
     }
 
