@@ -13,11 +13,13 @@ public class SourceGenerator
     public static final String INTENT_VAR_NAME = " intent ";
 
     ClassName intentClassName = ClassName.get("android.content", "Intent");
+    ClassName contextClassName = ClassName.get("android.content","Context");
     private String _className;
     private Set<ActivityArgsInfo> annotationSet;
     private TypeSpec.Builder _classBuilder;
     private String _packageName;
 
+    private String enclosingClassName;
 
     public SourceGenerator(Set<ActivityArgsInfo> annotationSet)
     {
@@ -37,13 +39,16 @@ public class SourceGenerator
 
     }
 
+
     private void init(ActivityArgsInfo activityArgsInfo)
     {
 
+        enclosingClassName = activityArgsInfo.getEnclosingClassName();
         _className = activityArgsInfo.getEnclosingClassName() + FILE_NAME_SUFFIX;
         _packageName = activityArgsInfo.getPackageName();
 
     }
+
     public String getPackageName()
     {
         return _packageName;
@@ -71,8 +76,12 @@ public class SourceGenerator
     }
     public MethodSpec.Builder getIntentMethodSpecBuilder()
     {
+
+        ParameterSpec contextParamSpec = ParameterSpec.builder(contextClassName,"context",Modifier.FINAL).build();
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getIntent");
-        addNewIntentStatement(builder, intentClassName);
+        builder.addParameter(contextParamSpec);
+        addNewIntentStatement(builder, intentClassName,contextParamSpec);
+
         builder.returns(intentClassName);
         builder.addModifiers(Modifier.PUBLIC);
 
@@ -85,9 +94,9 @@ public class SourceGenerator
         builder.addStatement("return $N",INTENT_VAR_NAME);
     }
 
-    private MethodSpec.Builder addNewIntentStatement(MethodSpec.Builder builder, ClassName intentClassName)
+    private MethodSpec.Builder addNewIntentStatement(MethodSpec.Builder builder, ClassName intentClassName,ParameterSpec contextParamSpec)
     {
-        return builder.addStatement(intentClassName.toString() + INTENT_VAR_NAME + " = new $T()", intentClassName);
+        return builder.addStatement(intentClassName.toString() + INTENT_VAR_NAME + " = new $T($N,$N)", intentClassName,contextParamSpec.name,enclosingClassName.toString() + ".class");
     }
 
 

@@ -16,7 +16,7 @@ public class MyActivity extends Activity
     Integer dataOne;
     @ActivityArg(key = EXTRA_DATA_TWO)
     String dataTwo;
-    private final String simpleName =MyActivity.this.getClass().getSimpleName();
+    private final String simpleName = MyActivity.this.getClass().getSimpleName();
 
 
     /**
@@ -35,12 +35,18 @@ public class MyActivity extends Activity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(MyActivity.this,getIntent().getStringExtra(EXTRA_DATA_TWO),Toast.LENGTH_LONG).show();
-                Log.d(simpleName,getIntent().getStringExtra(EXTRA_DATA_TWO));
+                Toast.makeText(MyActivity.this, getIntent().getStringExtra(EXTRA_DATA_TWO), Toast.LENGTH_LONG).show();
+                Log.d(simpleName, getIntent().getStringExtra(EXTRA_DATA_TWO));
             }
         });
 
     }
 
+   /* public Intent getLauncherIntent(Context context)
+    {
+            Intent intent = new Intent(context,MyActivity.class);
+
+    }
+*/
 
 }

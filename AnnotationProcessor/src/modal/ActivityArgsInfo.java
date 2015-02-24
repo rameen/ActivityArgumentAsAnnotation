@@ -13,17 +13,19 @@ public class ActivityArgsInfo
 {
     private final String annotatedFieldName;
     private final TypeMirror typeMirror;
+
+    private final Element enclosingClassElement;
+
     String enclosingClass;
     Element element;
     Messager messager;
     private ActivityArg activityArgs;
     private String packageName;
-
-
     public ActivityArgsInfo(Element element, Messager messager)
     {
         this.element = element;
         this.messager = messager;
+        this.enclosingClassElement = element.getEnclosingElement();
         this.enclosingClass = element.getEnclosingElement().getSimpleName().toString();
         this.activityArgs = element.getAnnotation(ActivityArg.class);
         this.annotatedFieldName = element.getSimpleName().toString();
@@ -31,6 +33,7 @@ public class ActivityArgsInfo
         initializePackagename();
 
     }
+
 
     private void initializePackagename()
     {
@@ -42,6 +45,11 @@ public class ActivityArgsInfo
             this.packageName = fullName.substring(0,fullName.lastIndexOf("."));
             Utils.printMessage(messager,"package name"+packageName);
         }
+    }
+
+    public Element getEnclosingClassElement()
+    {
+        return enclosingClassElement;
     }
 
     public String getEnclosingClassName()
