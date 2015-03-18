@@ -65,12 +65,10 @@ public class MetricsProcessor extends AbstractProcessor
         Set<ActivityArgsInfo> infoSet = annotationMap.get(enclosingClassName);
         if (infoSet != null)
         {
-            printMessage("set is not null");
             infoSet.add(activityArgsInfo);
 
         } else
         {
-            printMessage("set is  null");
             infoSet = new HashSet<ActivityArgsInfo>();
             infoSet.add(activityArgsInfo);
             annotationMap.put(enclosingClassName, infoSet);
