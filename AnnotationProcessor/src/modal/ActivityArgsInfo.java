@@ -9,20 +9,19 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeMirror;
 
-public class ActivityArgsInfo
-{
+public class ActivityArgsInfo {
+    
+
     private final String annotatedFieldName;
     private final TypeMirror typeMirror;
-
     private final Element enclosingClassElement;
-
-    String enclosingClass;
-    Element element;
-    Messager messager;
+    private String enclosingClass;
+    private Element element;
+    private Messager messager;
     private ActivityArg activityArgs;
     private String packageName;
-    public ActivityArgsInfo(Element element, Messager messager)
-    {
+
+    public ActivityArgsInfo(Element element, Messager messager) {
         this.element = element;
         this.messager = messager;
         this.enclosingClassElement = element.getEnclosingElement();
@@ -35,49 +34,41 @@ public class ActivityArgsInfo
     }
 
 
-    private void initializePackagename()
-    {
+    private void initializePackagename() {
         Element enclosingElement = this.element.getEnclosingElement();
-        if (enclosingElement.getKind() == ElementKind.CLASS)
-        {
-             String fullName = enclosingElement.toString();
-            Utils.printMessage(messager,"full name" + fullName);
-            this.packageName = fullName.substring(0,fullName.lastIndexOf("."));
-            Utils.printMessage(messager,"package name"+packageName);
+        if (enclosingElement.getKind() == ElementKind.CLASS) {
+            String fullName = enclosingElement.toString();
+            Utils.printMessage(messager, "full name" + fullName);
+            this.packageName = fullName.substring(0, fullName.lastIndexOf("."));
+            Utils.printMessage(messager, "package name" + packageName);
         }
     }
 
-    public Element getEnclosingClassElement()
-    {
+    public Element getEnclosingClassElement() {
         return enclosingClassElement;
     }
 
-    public String getEnclosingClassName()
-    {
+    public String getEnclosingClassName() {
         return enclosingClass;
     }
 
-    public Element getElement()
-    {
+    public Element getElement() {
         return element;
     }
 
-    public String getAnnotatedFieldName()
-    {
+    public String getAnnotatedFieldName() {
         return annotatedFieldName;
     }
 
-    public ActivityArg getAnnotation()
-    {
+    public ActivityArg getAnnotation() {
         return activityArgs;
     }
-    public ClassName getFieldType()
-    {
+
+    public ClassName getFieldType() {
         return (ClassName) ClassName.get(typeMirror);
     }
 
-    public String getPackageName()
-    {
+    public String getPackageName() {
         return packageName;
     }
 }

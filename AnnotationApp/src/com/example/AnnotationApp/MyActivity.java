@@ -40,6 +40,8 @@ public class MyActivity extends Activity
             }
         });
 
+
+
     }
 
    /* public Intent getLauncherIntent(Context context)
