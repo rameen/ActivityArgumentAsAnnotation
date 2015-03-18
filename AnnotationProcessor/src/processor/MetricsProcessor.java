@@ -125,7 +125,6 @@ public class MetricsProcessor extends AbstractProcessor
             try
             {
                 JavaFile javaFile = JavaFile.builder(sourceGenerator.getPackageName(), sourceGenerator.getClassSource()).build();
-                printMessage("source generated");
                 printMessage(javaFile.toString());
                 printMessage(javaFile.packageName);
                 //Must write using filer to generate code
