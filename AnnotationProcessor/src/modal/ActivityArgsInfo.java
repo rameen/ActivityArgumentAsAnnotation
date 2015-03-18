@@ -10,7 +10,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.TypeMirror;
 
 public class ActivityArgsInfo {
-    
+
 
     private final String annotatedFieldName;
     private final TypeMirror typeMirror;
