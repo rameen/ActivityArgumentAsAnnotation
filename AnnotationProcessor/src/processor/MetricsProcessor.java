@@ -116,9 +116,9 @@ public class MetricsProcessor extends AbstractProcessor
     public void generateCode()
     {
 
-        for (String key : annotationMap.keySet())
+        for (String className : annotationMap.keySet())
         {
-            Set<ActivityArgsInfo> infoSet = annotationMap.get(key);
+            Set<ActivityArgsInfo> infoSet = annotationMap.get(className);
             SourceGenerator sourceGenerator = new SourceGenerator(infoSet);
             sourceGenerator.generateCode();
 
